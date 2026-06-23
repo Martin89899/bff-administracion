@@ -21,6 +21,13 @@ public class DashboardResponse {
     public static class PatientSummary {
         private Integer totalMascotas;
         private Integer totalPropietarios;
+        
+        // Getters y Setters manuales para asegurar compatibilidad
+        public Integer getTotalMascotas() { return totalMascotas; }
+        public void setTotalMascotas(Integer totalMascotas) { this.totalMascotas = totalMascotas; }
+        
+        public Integer getTotalPropietarios() { return totalPropietarios; }
+        public void setTotalPropietarios(Integer totalPropietarios) { this.totalPropietarios = totalPropietarios; }
     }
 
 }
