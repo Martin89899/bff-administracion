@@ -8,12 +8,17 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class DashboardResponse {
 
     private List<Product> alertasStockCritico;
     private Integer totalInsumosMedicos;
     private PatientSummary resumenPacientes;
+
+    public DashboardResponse(List<Product> alertasStockCritico, Integer totalInsumosMedicos, PatientSummary resumenPacientes) {
+        this.alertasStockCritico = alertasStockCritico;
+        this.totalInsumosMedicos = totalInsumosMedicos;
+        this.resumenPacientes = resumenPacientes;
+    }
 
     @Data
     @NoArgsConstructor
