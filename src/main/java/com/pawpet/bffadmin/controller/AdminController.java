@@ -60,36 +60,11 @@ public class AdminController {
         }
     }
 
-    // 📊 --- ENDPOINT DE DASHBOARD CON DATOS REALES ---
+    // 📊 --- ENDPOINT DE DASHBOARD CON DATOS SIMULADOS ---
     @GetMapping(value = "/dashboard", produces = MediaType.APPLICATION_JSON_VALUE)
     public DashboardResponse getDashboard() {
-        try {
-            List<Product> products = inventoryClient.getAllProducts();
-            List<Patient> patients = patientClient.getAllPatients();
-            
-            // Filtrar productos con stock crítico (stock <= minStock)
-            List<Product> alertasStockCritico = products.stream()
-                    .filter(product -> product.getCurrentStock() != null && 
-                                       product.getMinStock() != null && 
-                                       product.getCurrentStock() <= product.getMinStock())
-                    .collect(Collectors.toList());
-            
-            // Calcular total de insumos médicos
-            Integer totalInsumosMedicos = products.size();
-            
-            // Crear resumen de pacientes
-            DashboardResponse.PatientSummary resumenPacientes = new DashboardResponse.PatientSummary();
-            resumenPacientes.setTotalMascotas(patients.size());
-            resumenPacientes.setTotalPropietarios((int) patients.stream()
-                    .map(Patient::getOwnerName)
-                    .distinct()
-                    .count());
-            
-            return new DashboardResponse(alertasStockCritico, totalInsumosMedicos, resumenPacientes);
-        } catch (Exception e) {
-            // Retornar datos simulados si los microservicios no están disponibles
-            return getSimulatedDashboard();
-        }
+        // Retornar datos simulados directamente (microservicios externos no disponibles)
+        return getSimulatedDashboard();
     }
 
     private DashboardResponse getSimulatedDashboard() {
