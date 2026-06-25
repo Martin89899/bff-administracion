@@ -6,10 +6,14 @@ import com.pawpet.bffadmin.client.AuthClient; // <-- 1. Importamos el nuevo clie
 import com.pawpet.bffadmin.dto.DashboardResponse;
 import com.pawpet.bffadmin.dto.Patient;
 import com.pawpet.bffadmin.dto.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;       // <-- Importado para manejar respuestas HTTP específicas
 import org.springframework.http.MediaType;       // <-- Importado para MediaType
 import org.springframework.http.ResponseEntity;   // <-- Importado para retornar respuestas genéricas o errores
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping; // <-- Importado para la ruta del login
 import org.springframework.web.bind.annotation.RequestBody; // <-- Importado para recibir las credenciales
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/bff/admin")
 public class AdminController {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
     private final InventoryClient inventoryClient;
     private final PatientClient patientClient;
@@ -60,40 +66,101 @@ public class AdminController {
         }
     }
 
-    // 📊 --- ENDPOINT DE DASHBOARD CON DATOS SIMULADOS ---
+    // 📊 --- ENDPOINT DE DASHBOARD CON DATOS REALES ---
     @GetMapping(value = "/dashboard", produces = MediaType.APPLICATION_JSON_VALUE)
     public DashboardResponse getDashboard() {
-        // Retornar datos simulados directamente (microservicios externos no disponibles)
-        return getSimulatedDashboard();
+        try {
+            log.info("Fetching dashboard data from inventory service");
+            // Obtener productos con stock crítico del microservicio de inventario
+            List<Product> criticalAlerts = inventoryClient.getStockAlerts();
+            log.info("Received {} critical alerts from inventory service", criticalAlerts.size());
+
+            // Total de insumos (usamos el tamaño de alertas como aproximación por ahora)
+            Integer totalSupplies = criticalAlerts.size();
+            log.info("Total supplies: {}", totalSupplies);
+
+            // Resumen de pacientes (simulado por ahora, ya que patientClient no está configurado)
+            DashboardResponse.PatientSummary patientSummary = new DashboardResponse.PatientSummary();
+            patientSummary.setTotalMascotas(150);
+            patientSummary.setTotalPropietarios(95);
+
+            return new DashboardResponse(criticalAlerts, totalSupplies, patientSummary);
+        } catch (Exception e) {
+            log.error("Error fetching dashboard data from inventory service: {}", e.getMessage(), e);
+            // Fallback a datos simulados si hay error de conexión
+            return getSimulatedDashboard();
+        }
     }
 
     private DashboardResponse getSimulatedDashboard() {
+        log.warn("Using simulated dashboard data - connection to inventory service failed");
         // Productos simulados con stock crítico
-        List<Product> alertasStockCritico = new ArrayList<>();
+        List<Product> criticalAlerts = new ArrayList<>();
         Product product1 = new Product();
         product1.setId(1L);
         product1.setName("Antibiótico Amoxicilina");
         product1.setCategory("REMEDIO");
-        product1.setCurrentStock(5);
+        product1.setStock(5);
         product1.setMinStock(10);
         product1.setUnit("unidades");
-        alertasStockCritico.add(product1);
-        
+        criticalAlerts.add(product1);
+
         Product product2 = new Product();
         product2.setId(2L);
         product2.setName("Vacuna Rabia");
         product2.setCategory("VACUNA");
-        product2.setCurrentStock(3);
+        product2.setStock(3);
         product2.setMinStock(8);
         product2.setUnit("dosis");
-        alertasStockCritico.add(product2);
-        
-        Integer totalInsumosMedicos = 25;
-        
-        DashboardResponse.PatientSummary resumenPacientes = new DashboardResponse.PatientSummary();
-        resumenPacientes.setTotalMascotas(150);
-        resumenPacientes.setTotalPropietarios(95);
-        
-        return new DashboardResponse(alertasStockCritico, totalInsumosMedicos, resumenPacientes);
+        criticalAlerts.add(product2);
+
+        Integer totalSupplies = 25;
+
+        DashboardResponse.PatientSummary patientSummary = new DashboardResponse.PatientSummary();
+        patientSummary.setTotalMascotas(150);
+        patientSummary.setTotalPropietarios(95);
+
+        return new DashboardResponse(criticalAlerts, totalSupplies, patientSummary);
+    }
+
+    // 📦 --- ENDPOINTS DE GESTIÓN DE INVENTARIO ---
+
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        try {
+            log.info("Fetching all products from inventory service");
+            List<Product> products = inventoryClient.getAllProducts(1, 1000, "name", "asc");
+            log.info("Received {} products from inventory service", products.size());
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            log.error("Error fetching products from inventory service: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        try {
+            log.info("Creating product: {}", product.getName());
+            Product createdProduct = inventoryClient.createProduct(product);
+            log.info("Product created successfully with ID: {}", createdProduct.getId());
+            return ResponseEntity.ok(createdProduct);
+        } catch (Exception e) {
+            log.error("Error creating product: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        try {
+            log.info("Deleting product with ID: {}", id);
+            inventoryClient.deleteProduct(id);
+            log.info("Product deleted successfully");
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Error deleting product: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

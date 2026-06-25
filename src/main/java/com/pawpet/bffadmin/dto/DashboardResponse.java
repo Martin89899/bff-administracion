@@ -10,14 +10,14 @@ import java.util.List;
 @NoArgsConstructor
 public class DashboardResponse {
 
-    private List<Product> alertasStockCritico;
-    private Integer totalInsumosMedicos;
-    private PatientSummary resumenPacientes;
+    private List<Product> criticalAlerts;
+    private Integer totalSupplies;
+    private PatientSummary patientSummary;
 
-    public DashboardResponse(List<Product> alertasStockCritico, Integer totalInsumosMedicos, PatientSummary resumenPacientes) {
-        this.alertasStockCritico = alertasStockCritico;
-        this.totalInsumosMedicos = totalInsumosMedicos;
-        this.resumenPacientes = resumenPacientes;
+    public DashboardResponse(List<Product> criticalAlerts, Integer totalSupplies, PatientSummary patientSummary) {
+        this.criticalAlerts = criticalAlerts;
+        this.totalSupplies = totalSupplies;
+        this.patientSummary = patientSummary;
     }
 
     @Data

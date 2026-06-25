@@ -1,7 +1,9 @@
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\BffAdministracionApplication.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\client\InventoryClient.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\client\PatientClient.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\controller\AdminController.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\dto\DashboardResponse.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\dto\Patient.java
-C:\Users\marti\OneDrive\Escritorio\bff-administracion\src\main\java\com\pawpet\bffadmin\dto\Product.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/BffAdministracionApplication.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/client/AuthClient.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/client/InventoryClient.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/client/PatientClient.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/config/CorsConfig.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/controller/AdminController.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/dto/DashboardResponse.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/dto/Patient.java
+/home/Itha/Escritorio/ms-auth/bff-administracion-feature-migracion-bff/src/main/java/com/pawpet/bffadmin/dto/Product.java
